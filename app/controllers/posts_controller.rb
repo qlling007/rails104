@@ -7,14 +7,30 @@ class PostsController < ApplicationController
 
   end
   def edit
-   @group = Group.find(params[:id])
-   @post = Post.new
+    @group = Group.find(params[:group_id])
+    @post = Post.find(params[:id])
+    @post.group = @group
+  end
+
+  def update
+    @group = Group.find(params[:group_id])
+    @post = Post.find(params[:id])
+    @post.group = @group
+    @post.user = current_user
+
+    if @post.update(post_params)
+      redirect_to account_posts_path, notice: "編輯成功"
+    else
+      render :edit
+    end
   end
   def destroy
-     @group = Group.find(params[:id])
-     @group.destroy
-     flash[:alert] = "Group deleted"
-     redirect_to post_group_path(@group)
+    @group = Group.find(params[:group_id])
+    @post = Post.find(params[:id])
+    @post.group = @group
+    @post.destroy
+      flash[:alert] = "post deleted"
+      redirect_to account_posts_path
    end
 
   def create
